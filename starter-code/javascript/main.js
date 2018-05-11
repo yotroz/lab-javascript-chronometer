@@ -1,60 +1,47 @@
-var chronometer = new Chronometer();
-var btnLeft     = document.getElementById('btnLeft');
-var btnRight    = document.getElementById('btnRight');
-var minDec      = document.getElementById('minDec');
-var minUni      = document.getElementById('minUni');
-var secDec      = document.getElementById('secDec');
-var secUni      = document.getElementById('secUni');
-var milDec      = document.getElementById('milDec');
-var milUni      = document.getElementById('milUni');
+var btnLeft = document.getElementById('btnLeft');
+var btnRight = document.getElementById('btnRight');
 
-
-function printTime() {
-
-}
-
-function printMinutes() {
-
-}
-
-function printSeconds() {
-
-}
-
-function printMilliseconds() {
-
-}
-
-function printSplit() {
-
-}
-
-function clearSplits() {
-
-}
-
-function setStopBtn() {
-
-}
-
-function setSplitBtn() {
-
-}
-
-function setStartBtn() {
-
-}
-
-function setResetBtn() {
-
-}
+var chronometer = new Chronometer({
+  minDec: document.getElementById('minDec'),
+  minUni: document.getElementById('minUni'),
+  secDec: document.getElementById('secDec'),
+  secUni: document.getElementById('secUni'),
+  hunDec: document.getElementById('hunDec'),
+  hunUni: document.getElementById('hunUni'),
+  splitList: document.getElementById('splits')
+});
 
 // Start/Stop Button
-btnLeft.addEventListener('click', function () {
+btnLeft.onclick = function() {
+  if (this.classList.contains("start")) {
+    chronometer.startClick();
 
-});
+    this.classList.remove("start");
+    this.classList.add("stop");
+    this.innerText = "STOP";
+
+    btnRight.classList.remove("reset");
+    btnRight.classList.add("split");
+    btnRight.innerText = "SPLIT";
+  } else {
+    chronometer.stopClick();
+
+    this.classList.remove("stop");
+    this.classList.add("start");
+    this.innerText = "START";
+
+    btnRight.classList.remove("split");
+    btnRight.classList.add("reset");
+
+    btnRight.innerText = "RESET";
+  }
+};
 
 // Reset/Split Button
-btnRight.addEventListener('click', function () {
-
-});
+btnRight.onclick = function() {
+  if (this.classList.contains("split")) {
+    chronometer.splitClick();
+  } else {
+    chronometer.resetClick();
+  }
+};

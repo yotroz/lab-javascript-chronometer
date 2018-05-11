@@ -1,15 +1,19 @@
 describe('', function () {
   beforeEach(function () {
-    chronometer = new Chronometer();
+    chronometer = new Chronometer({
+      minDec: document.createElement("div"),
+      minUni: document.createElement("div"),
+      secDec: document.createElement("div"),
+      secUni: document.createElement("div"),
+      hunDec: document.createElement("div"),
+      hunUni: document.createElement("div"),
+      splitList: document.createElement("div")
+    });
   });
 
   describe('constructor function', function () {
     it('Should declare a Chronometer function', function () {
       expect(typeof Chronometer).toEqual('function');
-    });
-
-    it('Should not receive any parameter', function () {
-      expect(Chronometer.length).toEqual(0);
     });
 
     it('Should declare a `currentTime` property', function () {
@@ -39,89 +43,115 @@ describe('', function () {
       expect(typeof chronometer.startClick).toEqual('function');
     });
 
-    it('Should declare an intervalId property as part of Chronometer', function () {
-      expect(chronometer.intervalId).toBeDefined();
-    });
-
     it('Set to intervalId a new setInterval', function () {
       expect(typeof chronometer.intervalId).toEqual('number');
     });
 
-    it('should increment 1 to currentTime property on every 1 second interval', function () {
-      jasmine.clock().tick(1000);
+    it('should increment 1 to currentTime property on every 10 milliseconds of seconds interval', function () {
+      jasmine.clock().tick(10);
 
       expect(chronometer.currentTime).toEqual(1);
     });
 
-    it('after 3 seconds, currentTime should be 3', function () {
+    it('after 3 seconds, currentTime should be 300', function () {
       jasmine.clock().tick(3000);
 
-      expect(chronometer.currentTime).toEqual(3);
+      expect(chronometer.currentTime).toEqual(300);
     });
   });
 
-  describe('setMinutes function', function () {
+  describe('getMinutes function', function () {
     it('Should be declare', function () {
-      expect(typeof chronometer.setMinutes).toEqual('function');
+      expect(typeof chronometer.getMinutes).toEqual('function');
     });
 
     it('Should return a number', function () {
-      chronometer.currentTime = 65;
-      expect(typeof chronometer.setMinutes()).toEqual('number');
+      chronometer.currentTime = 234;
+      expect(typeof chronometer.getMinutes()).toEqual('number');
     });
 
     it('Should return a number without decimals', function () {
-      chronometer.currentTime = 65;
+      chronometer.currentTime = 234;
 
-      expect(chronometer.setMinutes() % 1).toEqual(0);
+      expect(chronometer.getMinutes() % 1).toEqual(0);
     });
 
     it('Should return the currentTime in minutes', function () {
-      chronometer.currentTime = 65;
+      chronometer.currentTime = 6000;
 
-      expect(chronometer.setMinutes()).toEqual(1);
+      expect(chronometer.getMinutes()).toEqual(1);
     });
 
     it('Should return 0 when the currentTime haven\'t start', function () {
       chronometer.currentTime = 0;
 
-      expect(chronometer.setMinutes()).toEqual(0);
+      expect(chronometer.getMinutes()).toEqual(0);
     });
 
     it('Should return the currentTime in minutes even for laaaarge numbers', function () {
       chronometer.currentTime = 50210;
 
-      expect(chronometer.setMinutes()).toEqual(836);
+      expect(chronometer.getMinutes()).toEqual(8);
     });
   });
 
-  describe('setSeconds function', function () {
+  describe('getSeconds function', function () {
     it('Should be declare', function () {
-      expect(typeof chronometer.setSeconds).toEqual('function');
+      expect(typeof chronometer.getSeconds).toEqual('function');
     });
 
     it('Should return a number', function () {
       chronometer.currentTime = 3;
 
-      expect(typeof chronometer.setSeconds(0)).toEqual('number');
+      expect(typeof chronometer.getSeconds()).toEqual('number');
     });
 
     it('Should return 0 when the currentTime haven\'t start', function () {
       chronometer.currentTime = 0;
 
-      expect(chronometer.setSeconds(0)).toEqual(0);
+      expect(chronometer.getSeconds()).toEqual(0);
     });
 
     it('Should return the seconds of the currentTime', function () {
-      chronometer.currentTime = 15;
+      chronometer.currentTime = 300;
 
-      expect(chronometer.setSeconds(0)).toEqual(15);
+      expect(chronometer.getSeconds()).toEqual(3);
     });
 
     it('Should return the seconds that remain after removing the minutes to the currentTime', function () {
-      chronometer.currentTime = 115;
+      chronometer.currentTime = 6500;
 
-      expect(chronometer.setSeconds(1)).toEqual(55);
+      expect(chronometer.getSeconds()).toEqual(5);
+    });
+  });
+
+  describe('getHundredthSeconds function', function () {
+    it('Should be declare', function () {
+      expect(typeof chronometer.getHundredthSeconds).toEqual('function');
+    });
+
+    it('Should return a number', function () {
+      chronometer.currentTime = 3;
+
+      expect(typeof chronometer.getHundredthSeconds()).toEqual('number');
+    });
+
+    it('Should return 0 when the currentTime haven\'t start', function () {
+      chronometer.currentTime = 0;
+
+      expect(chronometer.getHundredthSeconds()).toEqual(0);
+    });
+
+    it('Should return the currentTime', function () {
+      chronometer.currentTime = 300;
+
+      expect(chronometer.getHundredthSeconds()).toEqual(0);
+    });
+
+    it('Should return the seconds that remain after removing the seconds to the currentTime', function () {
+      chronometer.currentTime = 123;
+
+      expect(chronometer.getHundredthSeconds()).toEqual(23);
     });
   });
 
@@ -151,77 +181,61 @@ describe('', function () {
     });
   });
 
-  describe('setTime function', function () {
+  describe('drawTime function', function () {
     it('Should be declare', function () {
-      expect(typeof chronometer.setTime).toEqual('function');
+      expect(typeof chronometer.drawTime).toEqual('function');
     });
 
     it('Should be called on each interval of our startClick setInterval', function () {
       jasmine.clock().install();
       chronometer.startClick();
-      spyOn(chronometer, 'setTime');
+      spyOn(chronometer, 'drawTime');
       jasmine.clock().tick(1000);
 
-      expect(chronometer.setTime).toHaveBeenCalled();
+      expect(chronometer.drawTime).toHaveBeenCalled();
       jasmine.clock().uninstall();
     });
 
-    it('setTime should declare a `minutes` variable to store the 2 characters length minutes value', function () {
-      spyOn(chronometer, 'setTime').and.callFake(function () {
-        var minutes = this.twoDigitsNumber(this.setMinutes());
+    it('Should draw time', function () {
+      chronometer.currentTime = 67318;
+      chronometer.drawTime();
 
-        expect(minutes).toBeDefined();
-      });
-      chronometer.setTime();
+      expect(chronometer.minDec.innerText).toEqual('1');
+      expect(chronometer.minUni.innerText).toEqual('1');
+      expect(chronometer.secDec.innerText).toEqual('1');
+      expect(chronometer.secUni.innerText).toEqual('3');
+      expect(chronometer.hunDec.innerText).toEqual('1');
+      expect(chronometer.hunUni.innerText).toEqual('8');
     });
 
-    it('setTime should declare a `seconds` variable to store the 2 characters length seconds value', function () {
-      spyOn(chronometer, 'setTime').and.callFake(function () {
-        var seconds = this.twoDigitsNumber(this.setSeconds(2));
+    it('Should call other draw functions', function () {
+      spyOn(chronometer, 'drawMinutes');
+      spyOn(chronometer, 'drawSeconds');
+      spyOn(chronometer, 'drawHundredthSeconds');
 
-        expect(seconds).toBeDefined();
-      });
-      chronometer.setTime();
+      chronometer.drawTime();
+
+      expect(chronometer.drawMinutes).toHaveBeenCalled();
+      expect(chronometer.drawSeconds).toHaveBeenCalled();
+      expect(chronometer.drawHundredthSeconds).toHaveBeenCalled();
     });
+  });
 
-    it('`minutes` should equal \'00\' when currentTime is 0', function () {
-      chronometer.currentTime = 0;
-      spyOn(chronometer, 'setTime').and.callFake(function () {
-        var minutes = this.twoDigitsNumber(this.setMinutes());
-
-        expect(minutes).toEqual('00');
-      });
-      chronometer.setTime();
+  describe('drawMinutes function', function () {
+    it('Should be declare', function () {
+      expect(typeof chronometer.drawMinutes).toEqual('function');
     });
+  });
 
-    it('`minutes` should equal \'00\' when currentTime is 0', function () {
-      chronometer.currentTime = 0;
-      spyOn(chronometer, 'setTime').and.callFake(function () {
-        var seconds = this.twoDigitsNumber(this.setSeconds(0));
-
-        expect(seconds).toEqual('00');
-      });
-      chronometer.setTime();
+  describe('drawSeconds function', function () {
+    it('Should be declare', function () {
+      expect(typeof chronometer.drawSeconds).toEqual('function');
     });
+  });
 
-    it('`minutes` should equal the elapsed minutes of our currentTime', function () {
-      chronometer.currentTime = 121;
-      spyOn(chronometer, 'setTime').and.callFake(function () {
-        var minutes = this.twoDigitsNumber(this.setMinutes());
-
-        expect(minutes).toEqual('02');
-      });
-      chronometer.setTime();
-    });
-
-    it('`seconds` should equal the seconds that remain after removing the minutes to the currentTime', function () {
-      chronometer.currentTime = 129;
-      spyOn(chronometer, 'setTime').and.callFake(function () {
-        var seconds = this.twoDigitsNumber(this.setSeconds(2));
-
-        expect(seconds).toEqual('09');
-      });
-      chronometer.setTime();
+  describe('drawHundredthSeconds function', function () {
+    it('Should be declare', function () {
+      expect(typeof chronometer.drawHundredthSeconds).toEqual('function');
     });
   });
 
