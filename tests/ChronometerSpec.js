@@ -263,4 +263,17 @@ describe('', function () {
       expect(chronometer.currentTime).toEqual(0);
     });
   });
+
+  describe('splitClick function', function () {
+    it('Should be declare', function () {
+      expect(typeof chronometer.splitClick).toEqual('function');
+    });
+
+    it('Should add split to splitList', function () {
+      chronometer.currentTime = 67318;
+      chronometer.splitClick();
+
+      expect(chronometer.splitList.innerHTML).toEqual("<li>11:13:18</li>");
+    });
+  });
 });
