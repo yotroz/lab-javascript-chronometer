@@ -13,10 +13,35 @@ var chronometer = new Chronometer({
 
 // Start/Stop Button
 btnLeft.onclick = function() {
-  // TODO
+  if(this.classList.contains('start')) {
+
+    this.classList.remove('start'); 
+    this.classList.add('stop');
+    this.innerText = "STOP"; 
+    btnRight.classList.remove('reset');
+    btnRight.classList.add('split');
+    btnRight.innerText ='SPLIT';
+    chronometer.startClick();
+
+  } else {
+    this.classList.remove('stop'); 
+    this.classList.add('start'); 
+    this.innerText = "START"; 
+    btnRight.classList.remove('split');
+    btnRight.classList.add('reset');
+    btnRight.innerText ='RESET';
+    chronometer.stopClick();
+    
+  }
 };
 
 // Reset/Split Button
 btnRight.onclick = function() {
-  // TODO
+    if(this.classList.contains('reset')){
+      chronometer.resetClick();
+    }else{
+      chronometer.splitClick();
+    }
+
+  
 };

@@ -5,6 +5,8 @@ function Chronometer(opts) {
   this.secUni = opts.secUni;
   this.hunDec = opts.hunDec;
   this.hunUni = opts.hunUni;
+  this.currentTime = 0; 
+  this.intervalId = null; 
 
   this.splitList = opts.splitList;
 }
@@ -12,51 +14,71 @@ function Chronometer(opts) {
 Chronometer.prototype.CLICK_STEP = 10;
 
 Chronometer.prototype.startClick = function () {
-  this.intervalId = setInterval(function() {
-    // TODO
-  }.bind(this), this.CLICK_STEP);
+  this.intervalId = setInterval(function() { 
+    this.currentTime++
+    this.drawTime();
+  }.bind(this), this.CLICK_STEP)
 };
 
 Chronometer.prototype.getMinutes = function () {
-  // TODO
+  return Math.floor(this.currentTime / 100 / 60);
 };
 
 Chronometer.prototype.getSeconds = function () {
-  // TODO
+  return Math.floor((this.currentTime / 100) % 60);
 };
 
 Chronometer.prototype.getHundredthSeconds = function () {
-  // TODO
+  return this.currentTime % 100  
 };
 
 Chronometer.prototype.twoDigitsNumber = function (num) {
-  // TODO
-};
+  if(num <10) {
+    return "0" + num; 
+
+  } else {
+    return num.toString(); 
+  }
+}; 
 
 Chronometer.prototype.drawTime = function () {
-  // TODO
+  this.drawMinutes();
+  this.drawSeconds();
+  this.drawHundredthSeconds();
 };
 
 Chronometer.prototype.drawMinutes = function () {
-  // TODO
+  this.minDec.innerText = this.twoDigitsNumber(this.getMinutes())[0];
+  this.minUni.innerText = this.twoDigitsNumber(this.getMinutes())[1];
 };
 
 Chronometer.prototype.drawSeconds = function () {
-  // TODO
+  this.secDec.innerText = this.twoDigitsNumber(this.getSeconds())[0];
+  this.secUni.innerText = this.twoDigitsNumber(this.getSeconds())[1];
+
 };
 
 Chronometer.prototype.drawHundredthSeconds = function () {
-  // TODO
+  this.hunDec.innerText = this.twoDigitsNumber(this.getHundredthSeconds())[0];
+  this.hunUni.innerText = this.twoDigitsNumber(this.getHundredthSeconds())[1];
 };
 
 Chronometer.prototype.stopClick = function () {
-  // TODO
+  clearInterval(this.intervalId); 
 };
 
 Chronometer.prototype.resetClick = function () {
-  // TODO
+  this.currentTime = 0; 
+  this.drawTime(); 
+  this.splitList.innerHTML = "";
 };
 
 Chronometer.prototype.splitClick = function () {
-  // TODO
+  
+  var newSplit = document.createElement ("li");
+  newSplit.innerText =
+    this.twoDigitsNumber(this.getMinutes()) + ":" + 
+    this.twoDigitsNumber(this.getSeconds()) + ":" + 
+    this.twoDigitsNumber(this.getHundredthSeconds());
+  this.splitList.appendChild(newSplit);
 };

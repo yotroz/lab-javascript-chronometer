@@ -105,6 +105,7 @@ describe('', function () {
 
       expect(typeof chronometer.getSeconds()).toEqual('number');
     });
+    
 
     it('Should return 0 when the currentTime haven\'t start', function () {
       chronometer.currentTime = 0;
